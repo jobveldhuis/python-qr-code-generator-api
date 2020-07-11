@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 class MissingRequiredParameterError(Exception):
-    pass
+    """Raised when a missing required parameter is found, meaning the API cannot generate a QR code."""
 
 
 class MonthlyRequestLimitExceededError(Exception):
-    pass
+    """Raised when the monthly request limit has been exceeded. Either change key, upgrade or wait."""
 
 
 class InvalidCredentialsError(Exception):
-    pass
+    """Raised when user provides invalid credentials to the API."""
 
 
 class UnprocessableRequestError(Exception):
-    pass
+    """Raised when user tries to request something that cannot be given back by the API."""
 
 
 class UnknownApiError(Exception):
-    pass
+    """Raised when the API gives back an error that is unhandled by the current Python wrapper."""
