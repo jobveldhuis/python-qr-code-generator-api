@@ -63,8 +63,11 @@ class QrGenerator:
         self.output_filename = None
 
         if token:
-            if token == '.env':
-                self.set_option('access-token', os.environ['ACCESS_TOKEN'])
+            if not token:
+                try:
+                    self.set_option('access-token', os.environ['ACCESS_TOKEN'])
+                except KeyError:
+                    pass
             else:
                 self.set_option('access-token', token)
 
