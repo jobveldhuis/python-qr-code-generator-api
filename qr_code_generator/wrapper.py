@@ -1,5 +1,6 @@
-#!/usr/bin/env python
-from errors import *
+#!/usr/bin/env python3
+from qr_code_generator.errors import *
+from qr_code_generator.config import Config
 
 import requests
 import os
@@ -18,7 +19,7 @@ class QrGenerator:
 
     **kwargs
         A way to directly set the qr generation settings to the generator.
-        >>> t = QrGenerator(None, qr_code_text='TEST')
+        >>> t = QrGenerator(qr_code_text='TEST')
         >>> t.get_option('qr_code_text')
         'TEST'
 
@@ -58,23 +59,14 @@ class QrGenerator:
             'frame_icon_name': 'app',
             'frame_name': 'no-frame',
         }
-        self.config = {
-            'API_URI': 'https://api.qr-code-generator.com/v1/create?',
-            'FORCE_OVERWRITE': False,
-            'REQUIRED_PARAMETERS': [
-                'access-token',
-                'qr_code_text'
-            ],
-            'OUT_FOLDER': 'out',
-            'OUTPUT_FOLDER': 'kfc',
-        }
+        self.config = Config()
         self.output_filename = None
 
         if token:
             if token == '.env':
-                self.data['access-token'] = os.environ['ACCESS_TOKEN']
+                self.set_option('access-token', os.environ['ACCESS_TOKEN'])
             else:
-                self.data['access-token'] = token
+                self.set_option('access-token', token)
 
         for key, value in kwargs.items():
             self.set_option(key, value)
@@ -87,11 +79,15 @@ class QrGenerator:
 
     def set_option(self, key, value):
         """
-        Setter for the data dictionary object. If exists, updates the key value.
+        Setter for the data dictionary. If exists, updates the key value.
         >>> t = QrGenerator()
         >>> t.set_option('qr_code_text', 'Job')
         >>> t.get_option('qr_code_text')
         'Job'
+
+        >>> t.set_option('doesnotexist', 'value')
+        Traceback (most recent call last):
+        KeyError
 
         Parameters
         ----------
@@ -109,13 +105,13 @@ class QrGenerator:
         -------
         None
         """
-        if key not in self.data.keys():
+        if key not in self.data:
             raise KeyError
         self.data[key] = value
 
-    def get_option(self, key):
+    def get_option(self, key, obj='data'):
         """
-        Getter for the data dictionary object. If exists, returns the key value.
+        Getter for the data dictionary. If key exists, returns the value.
         >>> t = QrGenerator()
         >>> t.get_option('qr_code_text') == t.data['qr_code_text']
         True
@@ -128,6 +124,8 @@ class QrGenerator:
         ----------
         key : str
             The key of which the value is requested to be returned
+        obj : str
+            The dictionary object to update. Allowed values: data (default), config
 
         Returns
         -------
@@ -147,7 +145,6 @@ class QrGenerator:
         -------
         query_url : str
             The URL including querystring that can be used to send the POST request
-
         """
         query_url = self.config['API_URI']
         for key, value in self.data.items():
@@ -287,7 +284,7 @@ class QrGenerator:
         FileNotFoundError
             Either the combination of OUT_FOLDER and OUTPUT_FOLDER does not exist, or there was no filename to write to.
         MissingRequiredParameterError
-            The request is sent with a missing parameter, which leads to an error on the server side.
+            The request is sent with a missing parameter, which would lead to an error on the server side.
 
         Returns
         -------
