@@ -1,29 +1,26 @@
 #!/usr/bin/env python3
-from qr_code_generator import QrGenerator
+from wrapper import QrGenerator
 import sys
+import argparse
 
 
-def main(**kwargs):
-    if 'access-token' in kwargs:
-        token = kwargs['access-token']
-        kwargs.pop('access-token', None)
-        api = QrGenerator(token, **kwargs)
+def main():
+    """Main entry point"""
+    parser = create_parser()
+    args = parser.parse_args()
+    if args.token:
+        api = QrGenerator(args.token)
     else:
-        api = QrGenerator(**kwargs)
-    print(api.get_option('API_URI', 'config'))
+        api = QrGenerator()
+
+
+def create_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-t', '--token', help='access token for the API', type=str, metavar='')
+    parser.add_argument('-c', '--config', help='config.ini file to load settings from', type=str, metavar='')
+    parser.add_argument('-o', '--output', help='output filename without extension', type=str, metavar='')
+    return parser
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 1:
-        args = {}
-        for arg in sys.argv[1:]:
-            key = arg.split('=')[0]
-            value = ''.join(arg.split('=')[1:])
-            if key in args:
-                raise ValueError('Double defined key in calling arguments')
-            if not value:
-                raise ValueError('Missing value for at least one argument')
-            args[key] = value
-        main(**args)
-    else:
-        main()
+    main()

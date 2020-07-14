@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-from qr_code_generator.errors import *
-from qr_code_generator.config import Config
+from errors import *
+from config import Config
 
 import requests
 import os
