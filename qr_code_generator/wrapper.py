@@ -286,7 +286,7 @@ class QrGenerator:
         Returns
         -------
         name : str
-            The definite name, based on the current timestamp
+            The name for the output file, based on the current timestamp
         """
         filename = 'QR-{}'.format(time.strftime('%Y%m%d-%H%M%S'))
         return filename
