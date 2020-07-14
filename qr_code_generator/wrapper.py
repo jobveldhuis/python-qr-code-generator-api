@@ -35,6 +35,7 @@ class QrGenerator:
     output_filename : str
         Filename to output to. Should not include extension. Can either be changed directly or gets updated in the request function.
     """
+
     def __init__(self, token=None, **kwargs):
         self.data = {
             'access-token': None,
@@ -233,9 +234,10 @@ class QrGenerator:
         -------
         None
         """
-        file = self.config['OUT_FOLDER'] + '/' + self.config['OUTPUT_FOLDER'] + '/' + self.output_filename + '.' + self.data['image_format'].lower()
-        if os.path.exists(file) and not os.stat(file).st_size == 0 and not self.config['FORCE_OVERWRITE']:
+        if self.output_file_exists() and not self.config['FORCE_OVERWRITE']:
             raise FileExistsError
+        file = self.config['OUT_FOLDER'] + '/' + self.config['OUTPUT_FOLDER'] + '/' + self.output_filename + '.' \
+            + self.data['image_format'].lower()
         with open(file, 'w') as f:
             f.writelines(content)
 
@@ -278,6 +280,21 @@ class QrGenerator:
             raise MonthlyRequestLimitExceededError
         raise UnknownApiError("An unhandled API exception occurred")
 
+    def output_file_exists(self):
+        """
+        Checks whether or not the output file exists in the selected output folders.
+
+        Returns
+        -------
+        exists : bool
+            Whether or not the output file does exists in the set output folder mapping.
+        """
+        file = self.config['OUT_FOLDER'] + '/' + self.config['OUTPUT_FOLDER'] + '/' + self.output_filename + '.' + \
+            self.data['image_format'].lower()
+        if os.path.exists(file) and not os.stat(file).st_size == 0:
+            return True
+        return False
+
     @staticmethod
     def hash_time():
         """
@@ -312,6 +329,10 @@ class QrGenerator:
 
         if not self.output_filename:
             self.output_filename = self.hash_time()
+            i = 0
+            while self.output_file_exists():
+                self.output_filename = self.output_filename + '-' + i
+                i += 1
 
         # Iterate over data items to check for required parameters, as to not waste requests
         for key, value in self.data.items():
