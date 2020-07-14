@@ -5,6 +5,7 @@ from qr_code_generator.config import Config
 import requests
 import os
 import json
+import time
 
 
 class QrGenerator:
@@ -277,6 +278,19 @@ class QrGenerator:
             raise MonthlyRequestLimitExceededError
         raise UnknownApiError("An unhandled API exception occurred")
 
+    @staticmethod
+    def hash_time():
+        """
+        Create a unique name based on the hashed unix timestamp.
+
+        Returns
+        -------
+        name : str
+            The definite name, based on the current timestamp
+        """
+        filename = 'QR-{}'.format(time.strftime('%Y%m%d-%H%M%S'))
+        return filename
+
     def validate(self):
         """
         Validates the content in the request client-side to avoid getting errors processing.
@@ -297,8 +311,9 @@ class QrGenerator:
             raise FileNotFoundError
 
         if not self.output_filename:
-            raise FileNotFoundError
+            self.output_filename = self.hash_time()
 
+        # Iterate over data items to check for required parameters, as to not waste requests
         for key, value in self.data.items():
             if key in self.config['REQUIRED_PARAMETERS'] and not value:
                 raise MissingRequiredParameterError(key)
