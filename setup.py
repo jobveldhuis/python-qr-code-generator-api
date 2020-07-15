@@ -11,7 +11,7 @@ setuptools.setup(
     description="Python wrapper for qr-code-generator.com API",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/jobveldhuis/qr-code-generator-wrapper',
+    url='https://github.com/jobveldhuis/python-qr-code-generator-api',
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
