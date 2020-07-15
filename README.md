@@ -1,4 +1,4 @@
-# qr-code-generator-wrapper
+# python-qr-code-generator-api
 A simple Python wrapper for the API of qr-code-generator.com, which is used to generate QR codes with certain design elements.
 
 ## Why this API wrapper?
