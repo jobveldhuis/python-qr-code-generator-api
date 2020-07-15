@@ -24,7 +24,7 @@ The safest way to authenticate, is by using environment variables. This starts b
 #### Hardcode it in your own code
 A little bit less safe, because what if you accidentally commit your code with the token in it, or what if someone finds a readable portion of your code? If you choose to go down this route, understand that there are certain risks involved, but it can be done. There are two ways to hardcode it in your own code.
 1. Either make sure you call the QrGenerator class with a token parameter, as such: ```api = QrGenerator(<your token here>)```. This will fetch the token from your code and add it to the query.
-2. Or set it later in your code, by using the set_option function: ```QrGenerator.set_option('access-token', <your token here>).
+2. Or set it later in your code, by using the set_option function: ```QrGenerator.set_option('access-token', <your token here>)```.
 
 #### Hardcoded in the wrapper
 If you are going about the most dangerous way to do this, just hardcode it in the wrapper. You can update the standard value for the token by updating the options dictionary with key 'access-token'. Note that you should never do this, no matter what reason you think you have. Go for option 1, or if you have to, option 2. Any other choice is lazy.
