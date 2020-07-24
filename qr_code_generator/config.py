@@ -27,3 +27,24 @@ class Config(dict):
             raise KeyError
         else:
             self[key] = value
+
+    def load(self, file):
+        extension = file.split('.')[-1]
+        if not extension == 'ini':
+            raise ValueError('Selected file is not a .ini file')
+        with open(file, "r") as f:
+            content = f.readlines()
+            for line in content:
+                key = line.split('=')[0]
+                value = line.split('=')[1]
+
+                # Corrective measurements because of Python standards
+                try:
+                    if value.lower() == 'true':
+                        value = True
+                    if value.lower() == 'false':
+                        value = False
+                except AttributeError:
+                    pass
+
+                self.set(key, value)
