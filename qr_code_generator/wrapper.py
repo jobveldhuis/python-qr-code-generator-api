@@ -103,7 +103,7 @@ class QrGenerator:
 
         Raises
         ------
-        ParameterNotExistsError
+        KeyError
             The parameter that is requested to be updated does not exist
 
         Returns
