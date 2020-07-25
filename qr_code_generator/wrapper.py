@@ -268,7 +268,6 @@ class QrGenerator:
         """
         code = response.status_code
         if code == 401:
-            print(os.environ['ACCESS_TOKEN'])
             raise InvalidCredentialsError
         if code == 404:
             raise FileNotFoundError
@@ -319,6 +318,8 @@ class QrGenerator:
             Either the combination of OUT_FOLDER and OUTPUT_FOLDER does not exist, or there was no filename to write to.
         MissingRequiredParameterError
             The request is sent with a missing parameter, which would lead to an error on the server side.
+        ValueError
+            Output file name contains a '.' and thus an extension, which it should not.
 
         Returns
         -------
@@ -326,6 +327,12 @@ class QrGenerator:
         """
         if not self.config['OUT_FOLDER'] or not self.config['OUTPUT_FOLDER']:
             raise FileNotFoundError
+
+        try:
+            if '.' in self.output_filename:
+                raise ValueError('Output file should not contain extension')
+        except TypeError:
+            pass
 
         if not self.output_filename:
             self.output_filename = self.hash_time()
