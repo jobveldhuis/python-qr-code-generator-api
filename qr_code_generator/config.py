@@ -14,7 +14,8 @@ class Config(dict):
             'qr_code_text'
         ]
         self['OUT_FOLDER'] = 'out'
-        self['OUTPUT_FOLDER'] = 'test'
+        self['OUTPUT_FOLDER'] = 'output'
+        self['VERBOSE'] = False
 
     def get(self, key):
         try:
