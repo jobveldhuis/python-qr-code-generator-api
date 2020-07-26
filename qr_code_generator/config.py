@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+import yaml
+
+
 class Config(dict):
     """
     Configuration class, behaves just like a dict
@@ -65,17 +68,19 @@ class Config(dict):
 
     def load(self, file):
         """
-        Load a .ini file into the current configuration object.
+        Load a .yaml file into the current configuration object.
 
         Parameters
         ----------
         file : str
             The relative location of the file that should be used to import settings.
+        strict : bool
+            Whether or not importing should be done strictly or not.
 
         Raises
         ------
         ValueError
-            The selected file is not a .ini file and cannot be loaded into the configuration.
+            The selected file is not a .yaml file and cannot be loaded into the configuration.
 
         Returns
         -------
@@ -83,21 +88,11 @@ class Config(dict):
         """
 
         extension = file.split('.')[-1]
-        if not extension == 'ini':
-            raise ValueError('Selected file is not a .ini file')
+        if not extension == 'yaml':
+            raise ValueError('Configuration file should be a yaml-file.')
+
         with open(file, "r") as f:
-            content = f.readlines()
-            for line in content:
-                key = line.split('=')[0]
-                value = line.split('=')[1]
+            settings = yaml.load(f)
 
-                # Corrective measurements because of Python standards
-                try:
-                    if value.lower() == 'true':
-                        value = True
-                    if value.lower() == 'false':
-                        value = False
-                except AttributeError:
-                    pass
-
-                self.set(key, value)
+        for key, value in settings.items():
+            self.set(key, value)
