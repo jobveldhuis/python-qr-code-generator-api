@@ -18,18 +18,70 @@ class Config(dict):
         self['VERBOSE'] = False
 
     def get(self, key):
+        """
+        Get the value for a configuration key.
+
+        Parameters
+        ----------
+        key : str
+            The configuration setting you wish to know the value of.
+
+        Returns
+        -------
+        value : str
+            The corresponding value for requested key
+        """
+
         try:
             return self[key]
         except KeyError:
             return None
 
     def set(self, key, value):
+        """
+        Set a configuration setting to a value.
+
+        Parameters
+        ----------
+        key : str
+            The key of the setting you wish to set.
+        value : str
+            The value you wish to set the setting to.
+
+        Raises
+        ------
+        KeyError
+            The setting that is requested to be altered does not exist.
+
+        Returns
+        -------
+        None
+        """
+
         if key not in self:
             raise KeyError
         else:
             self[key] = value
 
     def load(self, file):
+        """
+        Load a .ini file into the current configuration object.
+
+        Parameters
+        ----------
+        file : str
+            The relative location of the file that should be used to import settings.
+
+        Raises
+        ------
+        ValueError
+            The selected file is not a .ini file and cannot be loaded into the configuration.
+
+        Returns
+        -------
+        None
+        """
+
         extension = file.split('.')[-1]
         if not extension == 'ini':
             raise ValueError('Selected file is not a .ini file')
