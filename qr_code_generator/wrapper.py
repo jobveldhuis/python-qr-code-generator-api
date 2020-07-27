@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-from errors import *
-from config import Config
+from qr_code_generator.errors import *
+from qr_code_generator.config import Config
 
 import requests
 import os
@@ -306,6 +306,38 @@ class QrGenerator:
         """
         filename = 'QR-{}'.format(time.strftime('%Y%m%d-%H%M%S'))
         return filename
+
+    def __log(self, message, sort='Message'):
+        """
+        Send a message to the console, when VERBOSE setting has been enabled.
+
+        Parameters
+        ----------
+        message
+        sort
+
+        Returns
+        -------
+        None
+        """
+
+        if self.config['VERBOSE']:
+            # Set color prefix for error message
+            if sort.lower() == 'error':
+                prefix = '\033[91m\033[1m'
+            elif sort.lower() == 'warning':
+                prefix = '\033[93m'
+            elif sort.lower() == 'success':
+                prefix = '\033[92m\033[1m'
+            else:
+                prefix = '\033[94m'
+
+            # Suffix will return console text to normal
+            suffix = '\033[0m'
+
+            # Set the total message and send it to the console
+            msg = f'{prefix}{message}{suffix}'
+            print(msg)
 
     def validate(self):
         """
