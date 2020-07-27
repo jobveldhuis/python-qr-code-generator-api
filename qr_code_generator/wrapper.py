@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-from qr_code_generator.errors import *
-from qr_code_generator.config import Config
+from errors import *
+from config import Config
 
 import requests
 import os
@@ -64,6 +64,7 @@ class QrGenerator:
         self.config = Config()
         self.output_filename = None
 
+        # TODO: Fix this code, because it does not make sense.
         if token:
             if not token:
                 try:
@@ -77,9 +78,11 @@ class QrGenerator:
             self.set_option(key, value)
 
         if not os.path.exists(self.config['OUT_FOLDER']):
+            self.__log(f'Folder {self.config["OUT_FOLDER"]} does not exist. Creating it.', 'warning')
             os.mkdir(self.config['OUT_FOLDER'])
 
         if not os.path.exists(self.config['OUT_FOLDER'] + '/' + self.config['OUTPUT_FOLDER']):
+            self.__log(f'Folder {self.config["OUTPUT_FOLDER"]} does not exist. Creating it.', 'warning')
             os.mkdir(self.config['OUT_FOLDER'] + '/' + self.config['OUTPUT_FOLDER'])
 
     def set_option(self, key, value):
@@ -111,7 +114,9 @@ class QrGenerator:
         None
         """
         if key not in self.data:
+            self.__log(f'Error when setting option "{key}", it does not exist.', 'error')
             raise KeyError
+        self.__log(f'Setting option "{key}" to "{value}"')
         self.data[key] = value
 
     def get_option(self, key, obj='data'):
@@ -151,6 +156,7 @@ class QrGenerator:
         query_url : str
             The URL including querystring that can be used to send the POST request
         """
+        self.__log('Starting to create the query URL.')
         query_url = self.config['API_URI']
         for key, value in self.data.items():
             if value:
@@ -158,6 +164,7 @@ class QrGenerator:
                     query_url = query_url + str(key) + "=" + str(value)
                 else:
                     query_url = query_url + "&" + str(key) + "=" + str(value)
+        self.__log(f'Done creating query url. URL to query: "{query_url}"')
         return query_url
 
     def request(self, file_name=None):
@@ -173,11 +180,14 @@ class QrGenerator:
         -------
         None
         """
+        self.__log('Starting to build a request.', 'warning')
         if file_name:
+            self.__log(f'File name specified. Setting output filename to "{file_name}"')
             self.output_filename = file_name
 
         self.validate()
         url = self.create_query_url()
+        self.__log('Initiating post request to query URL.')
         req = requests.post(url, data=self.data)
         self.handle_response(req)
         self.cleanup()
@@ -195,6 +205,7 @@ class QrGenerator:
         -------
         None
         """
+        self.__log(f'Received response from server. The code is: "{response}"')
         if not response.status_code == 200:
             self.handle_api_error(response)
         self.to_output_file(response.text)
@@ -214,6 +225,7 @@ class QrGenerator:
         -------
         None
         """
+        self.__log('Resetting value for output_filename, making way for another go.')
         self.output_filename = None
 
     def to_output_file(self, content):
@@ -234,15 +246,17 @@ class QrGenerator:
         -------
         None
         """
+        self.__log(f'Starting to write response content to output file.')
         if self.output_file_exists() and not self.config['FORCE_OVERWRITE']:
+            self.__log(f'Cannot write to file. Selected output file exists and FORCE_OVERWRITE is disabled.', 'error')
             raise FileExistsError
         file = self.config['OUT_FOLDER'] + '/' + self.config['OUTPUT_FOLDER'] + '/' + self.output_filename + '.' \
             + self.data['image_format'].lower()
         with open(file, 'w') as f:
             f.writelines(content)
+        self.__log(f'Successfully wrote response content to "{file}".', 'success')
 
-    @staticmethod
-    def handle_api_error(response):
+    def handle_api_error(self, response):
         """
         Error handling for status codes sent back by the API.
 
@@ -267,16 +281,22 @@ class QrGenerator:
         None
         """
         code = response.status_code
+        self.__log(f'Handling API error with status code {code}.', 'error')
         if code == 401:
+            self.__log(f'Invalid credentials. Please make sure your token is correct.', 'error')
             raise InvalidCredentialsError
         if code == 404:
+            self.__log(f'File not found on query. Make sure query URL is correct and retry.', 'error')
             raise FileNotFoundError
         if code == 422:
             content = json.loads(response.content)
             for error in content['errors']:
-                raise UnProcessableRequestError(f'Issue with field {error["field"]}: {error["message"]}')
+                self.__log(f'API could not process the request. Message: {error["message"]}.', 'error')
+                raise UnprocessableRequestError(f'Issue with field {error["field"]}: {error["message"]}')
         if code == 429:
+            self.__log(f'Monthly request limits exceeded. Upgrade billing or change token.', 'error')
             raise MonthlyRequestLimitExceededError
+        self.__log(f'Response for code: "{code}" was unhandled by wrapper. Sorry to not be more helpful.', 'error')
         raise UnknownApiError("An unhandled API exception occurred")
 
     def output_file_exists(self):
@@ -290,21 +310,26 @@ class QrGenerator:
         """
         file = self.config['OUT_FOLDER'] + '/' + self.config['OUTPUT_FOLDER'] + '/' + self.output_filename + '.' + \
             self.data['image_format'].lower()
+        self.__log(f'Checking if output file: "{file}" already exists.')
         if os.path.exists(file) and not os.stat(file).st_size == 0:
+            self.__log(f'Output file: "{file}" does exist.')
             return True
+        self.__log(f'Output file: "{file}" does not exist.')
         return False
 
-    @staticmethod
-    def hash_time():
+    def hash_time(self):
         """
         Create a unique name based on the hashed unix timestamp.
 
         Returns
         -------
-        name : str
+        filename : str
             The name for the output file, based on the current timestamp
         """
+        self.__log('Hashing time to create a unique filename.')
         filename = f'QR-{time.strftime("%Y%m%d-%H%M%S")}'
+        self.__log(f'The file name is {filename}.')
+
         return filename
 
     def __log(self, message, sort='Message'):
@@ -337,8 +362,11 @@ class QrGenerator:
             # Suffix will return console text to normal
             suffix = '\033[0m'
 
+            # Set time
+            current_time = time.strftime('%H:%M:%S')
+
             # Set the total message and send it to the console
-            msg = f'{prefix}{message}{suffix}'
+            msg = f'{prefix}[{current_time}] {message}{suffix}'
             print(msg)
 
     def validate(self):
@@ -359,23 +387,33 @@ class QrGenerator:
         -------
         None
         """
+        self.__log('Validating whether all conditions are met.')
         if not self.config['OUT_FOLDER'] or not self.config['OUTPUT_FOLDER']:
+            self.__log('The path to the output folder cannot be found.', 'error')
             raise FileNotFoundError
 
         try:
             if '.' in self.output_filename:
-                raise ValueError('Output file should not contain extension')
+                self.__log('The output filename should not contain an extension.', 'error')
+                raise ValueError
         except TypeError:
             pass
 
         if not self.output_filename:
+            self.__log('The output filename has not been specified.', 'warning')
             self.output_filename = self.hash_time()
             i = 0
             while self.output_file_exists():
+                self.__log('Adding a unique identifier to current filename.', 'warning')
                 self.output_filename = self.output_filename + '-' + i
                 i += 1
+            self.__log(f'Continuing with file: "{self.output_filename}"', 'success')
 
         # Iterate over data items to check for required parameters, as to not waste requests
+        self.__log('Starting to check if all required parameters are set')
         for key, value in self.data.items():
             if key in self.config['REQUIRED_PARAMETERS'] and not value:
+                self.__log(f'Missing a required parameter: {key}', 'error')
                 raise MissingRequiredParameterError(key)
+
+        self.__log('All validation successful.', 'success')
