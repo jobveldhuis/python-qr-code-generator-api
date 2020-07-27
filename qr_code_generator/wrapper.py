@@ -274,7 +274,7 @@ class QrGenerator:
         if code == 422:
             content = json.loads(response.content)
             for error in content['errors']:
-                raise UnprocessableRequestError('Issue with field {}: {}'.format(error['field'], error['message']))
+                raise UnProcessableRequestError(f'Issue with field {error["field"]}: {error["message"]}')
         if code == 429:
             raise MonthlyRequestLimitExceededError
         raise UnknownApiError("An unhandled API exception occurred")
@@ -304,7 +304,7 @@ class QrGenerator:
         name : str
             The name for the output file, based on the current timestamp
         """
-        filename = 'QR-{}'.format(time.strftime('%Y%m%d-%H%M%S'))
+        filename = f'QR-{time.strftime("%Y%m%d-%H%M%S")}'
         return filename
 
     def __log(self, message, sort='Message'):
