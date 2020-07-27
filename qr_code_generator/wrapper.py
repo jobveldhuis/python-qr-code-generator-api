@@ -313,8 +313,10 @@ class QrGenerator:
 
         Parameters
         ----------
-        message
-        sort
+        message : str
+            The message to relay to the user.
+        sort : str
+            The type of message to relay to the user, defaults to 'message'
 
         Returns
         -------
