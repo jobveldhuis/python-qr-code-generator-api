@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from wrapper import QrGenerator
+from qr_code_generator.wrapper import QrGenerator
 import argparse
 
 
@@ -9,10 +9,11 @@ def main():
     args = parser.parse_args()
 
     # When an API token is explicitly specified, set it. Else, initialize without token.
+    # Also, set the VERBOSE configuration directly here, so we get all logging.
     if args.token:
-        api = QrGenerator(args.token)
+        api = QrGenerator(args.token, VERBOSE=args.verbose)
     else:
-        api = QrGenerator()
+        api = QrGenerator(None, VERBOSE=args.verbose)
 
     # If a configuration file to load from has been found, load it to the app config
     if args.config:
@@ -21,10 +22,6 @@ def main():
     # If output filename is specified, set filename in app
     if args.output:
         api.output_filename = args.output
-
-    # If verbose flag is added, overwrite configuration to set VERBOSE to True
-    if args.verbose:
-        api.config['VERBOSE'] = True
 
     # If bulk requests are made, we should enumerate them and give them specific names
     if args.bulk:
@@ -56,7 +53,9 @@ def create_parser():
                         metavar='')
     parser.add_argument('-o', '--output', help='output filename without extension', type=str, metavar='')
     parser.add_argument('-b', '--bulk', help='amount of files to generate', type=int, metavar='')
-    parser.add_argument('-v', '--verbose', help='whether or not debug logs should show', action='store_true')
+    parser.add_argument('-v', '--verbose', help='whether or not program logs should show', action='store_true')
+    parser.add_argument('--disable_traceback', help='disable showing of Python traceback', action='store_true')
+    # parser.add_argument('-d', '--debug', help='whether or not debug logs should show', action='store_true')
     return parser
 
 

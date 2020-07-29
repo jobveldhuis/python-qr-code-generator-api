@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-from errors import *
-from config import Config
+from qr_code_generator.errors import *
+from qr_code_generator.config import Config
 
 import requests
 import os
@@ -75,7 +75,10 @@ class QrGenerator:
                 self.set_option('access-token', token)
 
         for key, value in kwargs.items():
-            self.set_option(key, value)
+            if key == key.upper():
+                self.config.set(key, value)
+            else:
+                self.set_option(key, value)
 
         if not os.path.exists(self.config['OUT_FOLDER']):
             self.__log(f'Folder {self.config["OUT_FOLDER"]} does not exist. Creating it.', 'warning')
