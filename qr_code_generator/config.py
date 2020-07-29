@@ -34,7 +34,6 @@ class Config(dict):
         value : str
             The corresponding value for requested key
         """
-
         try:
             return self[key]
         except KeyError:
@@ -60,7 +59,6 @@ class Config(dict):
         -------
         None
         """
-
         if key not in self:
             raise KeyError
         else:
@@ -86,7 +84,6 @@ class Config(dict):
         -------
         None
         """
-
         extension = file.split('.')[-1]
         if not extension == 'yaml':
             raise ValueError('Configuration file should be a yaml-file.')

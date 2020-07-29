@@ -35,7 +35,6 @@ class QrGenerator:
     output_filename : str
         Filename to output to. Should not include extension. Can either be changed directly or gets updated in the request function.
     """
-
     def __init__(self, token=None, **kwargs):
         self.data = {
             'access-token': None,
@@ -350,7 +349,6 @@ class QrGenerator:
         -------
         None
         """
-
         if self.config['VERBOSE']:
             # Set color prefix for error message
             if sort.lower() == 'error':

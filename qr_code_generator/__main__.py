@@ -46,7 +46,6 @@ def create_parser():
     parser : ArgumentParser
         The parser with arguments, that will parse the console command
     """
-
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--token', help='access token for the API', type=str, metavar='')
     parser.add_argument('-c', '--config', help='relative path to config.ini file to load settings from', type=str,
