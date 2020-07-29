@@ -63,15 +63,13 @@ class QrGenerator:
         self.config = Config()
         self.output_filename = None
 
-        # TODO: Fix this code, because it does not make sense.
         if token:
-            if not token:
-                try:
-                    self.set_option('access-token', os.environ['ACCESS_TOKEN'])
-                except KeyError:
-                    pass
-            else:
-                self.set_option('access-token', token)
+            self.set_option('access-token', token)
+        else:
+            try:
+                self.set_option('access-token', os.environ['ACCESS_TOKEN'])
+            except KeyError:
+                pass
 
         for key, value in kwargs.items():
             if key == key.upper():
