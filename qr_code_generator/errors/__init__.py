@@ -22,3 +22,8 @@ class UnprocessableRequestError(Exception):
 class UnknownApiError(Exception):
     """Raised when the API gives back an error that is unhandled by the current Python wrapper."""
     pass
+
+
+class UnknownYamlContentError(Exception):
+    """Raised when trying to load content from a yaml-file that is neither option nor config"""
+    pass
