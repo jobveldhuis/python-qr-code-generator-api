@@ -89,6 +89,6 @@ def load_yaml(file):
         raise ValueError()
 
     with open(file, "r") as f:
-        items = yaml.load(f)
+        items = yaml.load(f, Loader=yaml.FullLoader)
 
     return items
