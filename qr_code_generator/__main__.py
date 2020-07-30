@@ -19,6 +19,14 @@ def main():
     if args.config:
         api.config.load(args.config)
 
+    # If a preset file to load from has been found, load it to the app options
+    if args.preset:
+        api.data.load(args.preset)
+
+    # If a file has been found to load from, load it to data and config:
+    if args.load:
+        api.load(args.load)
+
     # If output filename is specified, set filename in app
     if args.output:
         api.output_filename = args.output
@@ -48,12 +56,16 @@ def create_parser():
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--token', help='access token for the API', type=str, metavar='')
-    parser.add_argument('-c', '--config', help='relative path to config.ini file to load settings from', type=str,
+    parser.add_argument('-c', '--config', help='relative path to yaml file to load settings from', type=str,
+                        metavar='')
+    parser.add_argument('-p', '--preset', help='relative path to yaml file to load options from', type=str,
+                        metavar='')
+    parser.add_argument('-l', '--load', help='relative path to yaml file that contains config / data', type=str,
                         metavar='')
     parser.add_argument('-o', '--output', help='output filename without extension', type=str, metavar='')
     parser.add_argument('-b', '--bulk', help='amount of files to generate', type=int, metavar='')
     parser.add_argument('-v', '--verbose', help='whether or not program logs should show', action='store_true')
-    parser.add_argument('--disable_traceback', help='disable showing of Python traceback', action='store_true')
+    # parser.add_argument('--disable_traceback', help='disable showing of Python traceback', action='store_true')
     # parser.add_argument('-d', '--debug', help='whether or not debug logs should show', action='store_true')
     return parser
 

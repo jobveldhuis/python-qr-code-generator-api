@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from qr_code_generator.errors import *
-from qr_code_generator.helpers import Config, Settings
+from qr_code_generator.helpers import Config, Settings, load_yaml
 
 import requests
 import os
@@ -348,6 +348,40 @@ class QrGenerator:
             # Set the total message and send it to the console
             msg = f'{prefix}[{current_time}] {message}{suffix}'
             print(msg)
+
+    def load(self, file):
+        """
+        Loads in the yaml file and splits the contents.
+
+        Parameters
+        ----------
+        file : str
+            The relative path to the yaml file with the settings in it
+
+        Raises
+        ------
+        UnknownYamlContentError
+            Content in the yaml-file does not meet requirements as specified in documentation
+
+        Returns
+        -------
+        None
+        """
+        self.__log(f'Starting to load settings from {file}', 'warning')
+        contents = load_yaml(file)
+        for item in contents:
+            if item == 'options':
+                self.__log(f'Found options in {file}, loading them', 'warning')
+                for i in contents[item]:
+                    self.__log(f'Setting {i.lower()} to {contents[item][i]}')
+                    self.set(i.lower(), contents[item][i])
+            elif item == 'config':
+                self.__log(f'Found configuration variables in {file}, loading them', 'warning')
+                for i in contents[item]:
+                    self.__log(f'Setting {i.upper()} to {contents[item][i]}')
+                    self.set(i.upper(), contents[item][i])
+            else:
+                raise UnknownYamlContentError
 
     def validate(self):
         """
