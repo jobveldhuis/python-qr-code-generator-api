@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from qr_code_generator.errors import *
-from qr_code_generator.config import Config
+from qr_code_generator.helpers import Config, Settings
 
 import requests
 import os
@@ -21,7 +21,7 @@ class QrGenerator:
     **kwargs
         A way to directly set the qr generation settings to the generator.
         >>> t = QrGenerator(qr_code_text='TEST')
-        >>> t.get_option('qr_code_text')
+        >>> t.get('qr_code_text')
         'TEST'
 
     Attributes
@@ -36,46 +36,20 @@ class QrGenerator:
         Filename to output to. Should not include extension. Can either be changed directly or gets updated in the request function.
     """
     def __init__(self, token=None, **kwargs):
-        self.data = {
-            'access-token': None,
-            'qr_code_text': "SPERZIEBONEN",
-            'image_format': 'SVG',
-            'image_width': 500,
-            'download': 0,
-            'foreground_color': '#000000',
-            'background_color': '#FFFFFF',
-            'marker_left_inner_color': '#000000',
-            'marker_left_outer_color': '#000000',
-            'marker_right_inner_color': '#000000',
-            'marker_right_outer_color': '#000000',
-            'marker_bottom_inner_color': '#000000',
-            'marker_bottom_outer_color': '#000000',
-            'marker_left_template': 'version1',
-            'marker_right_template': 'version1',
-            'marker_bottom_template': 'version1',
-            'qr_code_logo': 'no-logo',
-            'frame_color': '#000000',
-            'frame_text': None,
-            'frame_text_color': '#ffffff',
-            'frame_icon_name': 'app',
-            'frame_name': 'no-frame',
-        }
+        self.data = Settings()
         self.config = Config()
         self.output_filename = None
 
         if token:
-            self.set_option('access-token', token)
+            self.set('access-token', token)
         else:
             try:
-                self.set_option('access-token', os.environ['ACCESS_TOKEN'])
+                self.set('access-token', os.environ['ACCESS_TOKEN'])
             except KeyError:
                 pass
 
         for key, value in kwargs.items():
-            if key == key.upper():
-                self.config.set(key, value)
-            else:
-                self.set_option(key, value)
+            self.set(key, value)
 
         if not os.path.exists(self.config['OUT_FOLDER']):
             self.__log(f'Folder {self.config["OUT_FOLDER"]} does not exist. Creating it.', 'warning')
@@ -85,24 +59,24 @@ class QrGenerator:
             self.__log(f'Folder {self.config["OUTPUT_FOLDER"]} does not exist. Creating it.', 'warning')
             os.mkdir(self.config['OUT_FOLDER'] + '/' + self.config['OUTPUT_FOLDER'])
 
-    def set_option(self, key, value):
+    def set(self, key, value):
         """
-        Setter for the data dictionary. If exists, updates the key value.
+        Setter for both the options and the configuration. If exists, updates the key value.
         >>> t = QrGenerator()
-        >>> t.set_option('qr_code_text', 'Job')
-        >>> t.get_option('qr_code_text')
+        >>> t.set('qr_code_text', 'Job')
+        >>> t.get('qr_code_text')
         'Job'
 
-        >>> t.set_option('doesnotexist', 'value')
+        >>> t.set('doesnotexist', 'value')
         Traceback (most recent call last):
         KeyError
 
         Parameters
         ----------
         key : str
-            The key that we want to change
+            The key that we want to change, all caps for config, otherwise will be interpreted as option
         value : str
-            The value we want to update the key to
+            The value we want to update specified key to
 
         Raises
         ------
@@ -113,29 +87,34 @@ class QrGenerator:
         -------
         None
         """
-        if key not in self.data:
-            self.__log(f'Error when setting option "{key}", it does not exist.', 'error')
-            raise KeyError
-        self.__log(f'Setting option "{key}" to "{value}"')
-        self.data[key] = value
+        if key == key.upper():
+            if key not in self.config:
+                self.__log(f'Error when setting configuration variable "{key}", it does not exist', 'error')
+                raise KeyError
+            self.__log(f'Setting configuration variable "{key}" to "{value}"')
+            self.config[key] = value
+        else:
+            if key not in self.data:
+                self.__log(f'Error when setting option "{key}", it does not exist.', 'error')
+                raise KeyError
+            self.__log(f'Setting option "{key}" to "{value}"')
+            self.data[key] = value
 
-    def get_option(self, key, obj='data'):
+    def get(self, key):
         """
-        Getter for the data dictionary. If key exists, returns the value.
+        Getter for the data and configuration dictionary. If key exists, returns the value.
         >>> t = QrGenerator()
-        >>> t.get_option('qr_code_text') == t.data['qr_code_text']
+        >>> t.get('qr_code_text') == t.data['qr_code_text']
         True
 
         >>> t = QrGenerator()
-        >>> not t.get_option('xdwdwedewdwede')
+        >>> not t.get('xdwdwedewdwede')
         True
 
         Parameters
         ----------
         key : str
-            The key of which the value is requested to be returned
-        obj : str
-            The dictionary object to update. Allowed values: data (default), config
+            The key of which the value is requested to be returned, all caps for configuration key
 
         Returns
         -------
@@ -143,6 +122,8 @@ class QrGenerator:
             The value of the requested key in the data dictionary
         """
         try:
+            if key == key.upper():
+                return self.config[key]
             return self.data[key]
         except KeyError:
             return None
