@@ -13,7 +13,7 @@ class Config(dict):
         self['API_URI'] = 'https://api.qr-code-generator.com/v1/create?'
         self['FORCE_OVERWRITE'] = False
         self['REQUIRED_PARAMETERS'] = [
-            'access-token',
+            'access_token',
             'qr_code_text'
         ]
         self['OUT_FOLDER'] = 'out'
