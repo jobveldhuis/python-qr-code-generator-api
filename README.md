@@ -14,19 +14,26 @@ This wrapper provides an easy way to update QR options. Just set the dictionary 
 ### Automatically save QR codes
 The wrapper takes the API response and automatically turns it into a saved image in the desired output location. Do we need to say more?
 
-## How it works
-### Authentication
+## Usage
+The wrapper was developed with ease of use in mind. This means that one can either, directly call the module to perform a request, or code their own Python scripts and import the module.
+
+### Command Line Interface
+To perform a request via the command line, simply ```$ python3 qr_code_generator``` with flags to specify your needs. The following flags are supported: 
+* --token <token> (short: -t)
+* --load <path to yaml settings file> (short: -l)
+* --output <the output file name> (short: -o)
+* --bulk <amount of codes to generate> (short: -b)
+* --verbose (short -v)
+
+## Authentication
 There are three possible ways to authenticate with the API. Authentication is done on a token basis. A token can be generated [on this webpage](https://app.qr-code-generator.com/api/). The three ways are (based from most safe to least safe, and thus least preferred):
 
-#### Environment variables
+### Environment variables
 The safest way to authenticate, is by using environment variables. This starts by exporting your access key to an environment variable with ```$ export ACCESS_TOKEN=<your token here>```. After this, feel free to create an instance of QrGenerator by just calling the class as ```api = QrGenerator()```. The token will automatically be fetched from the environment.
 
-#### Hardcode it in your own code
-A little bit less safe, because what if you accidentally commit your code with the token in it, or what if someone finds a readable portion of your code? If you choose to go down this route, understand that there are certain risks involved, but it can be done. There are two ways to hardcode it in your own code.
+### Hardcoded in your own code
+A little bit less safe, because what if you accidentally commit your code with the token in it, or what if someone finds a readable portion of your code? If you choose to go down this route, understand that there are certain risks involved, but it can be done. There are two ways to put the token in your own code.
 1. Either make sure you call the QrGenerator class with a token parameter, as such: ```api = QrGenerator(<your token here>)```. This will fetch the token from your code and add it to the query.
-2. Or set it later in your code, by using the set_option function: ```QrGenerator.set_option('access-token', <your token here>)```.
-
-#### Hardcoded in the wrapper
-If you are going about the most dangerous way to do this, just hardcode it in the wrapper. You can update the standard value for the token by updating the options dictionary with key 'access-token'. Note that you should never do this, no matter what reason you think you have. Go for option 1, or if you have to, option 2. Any other choice is lazy.
+2. Or set it later in your code, by using the set function: ```QrGenerator.set('access-token', <your token here>)```.
 
 When ```QrGenerator.request()``` is called and the API token has not been set and the configuration file has not been altered, a custom Exception will be thrown: ```MissingRequiredParameterError```. This is because the API will directly return an InvalidCredentialsError regardless. If the configuration file has been changed, you might encounter a ```InvalidCredentialsError```. Either way, it will not work.
