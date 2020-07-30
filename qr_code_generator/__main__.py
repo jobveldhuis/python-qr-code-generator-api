@@ -48,10 +48,6 @@ def create_parser():
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--token', help='access token for the API', type=str, metavar='')
-    parser.add_argument('-c', '--config', help='relative path to yaml file to load settings from', type=str,
-                        metavar='')
-    parser.add_argument('-p', '--preset', help='relative path to yaml file to load options from', type=str,
-                        metavar='')
     parser.add_argument('-l', '--load', help='relative path to yaml file that contains config / data', type=str,
                         metavar='')
     parser.add_argument('-o', '--output', help='output filename without extension', type=str, metavar='')
