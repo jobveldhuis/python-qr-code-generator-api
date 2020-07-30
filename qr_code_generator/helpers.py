@@ -4,7 +4,7 @@ import yaml
 
 class Config(dict):
     """
-    Configuration class, behaves just like a dict
+    Configuration class, behaves just like a dict.
     """
     def __init__(self, *args, **kwargs):
         super(Config, self).__init__(*args, **kwargs)
@@ -20,28 +20,10 @@ class Config(dict):
         self['OUTPUT_FOLDER'] = 'output'
         self['VERBOSE'] = False
 
-    def load(self, file):
-        """
-        Load a .yaml file into the current configuration object.
-
-        Parameters
-        ----------
-        file : str
-            The relative location of the file that should be used to import settings.
-
-        Returns
-        -------
-        None
-        """
-        settings = load_yaml(file)
-
-        for key, value in settings.items():
-            self.set(key, value)
-
 
 class Settings(dict):
     """
-    Settings class, behaves just like a dict
+    Settings class, behaves just like a dict.
     """
     def __init__(self, *args, **kwargs):
         super(Settings, self).__init__(*args, **kwargs)
@@ -70,14 +52,22 @@ class Settings(dict):
         self['frame_icon_name'] = 'app'
         self['frame_name'] = 'no-frame'
 
-    def load(self, file):
-        settings = load_yaml(file)
 
-        for key, value in settings.items():
-            self.set(key, value)
-
-
+# Utility helper functions
 def is_yaml(file):
+    """
+    Checks whether or not the specified file is a yaml-file.
+
+    Parameters
+    ----------
+    file : str
+        The relative path to the file that should be checked.
+
+    Returns
+    -------
+    bool
+        Whether or not the specified file is a yaml-file.
+    """
     extension = file.split('.')[-1]
     if not extension == 'yaml':
         return False
@@ -85,6 +75,24 @@ def is_yaml(file):
 
 
 def load_yaml(file):
+    """
+    Loads a yaml file into a Python dictionary.
+
+    Parameters
+    ----------
+    file : str
+        The relative path to the yaml-file that should be used to load settings.
+
+    Raises
+    ------
+    ValueError
+        The specified file is not a yaml-file and thus could not be loaded.
+
+    Returns
+    -------
+    items : dict
+        The dictionary loaded from a Yaml file.
+    """
     if not is_yaml(file):
         raise ValueError()
 

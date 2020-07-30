@@ -15,14 +15,6 @@ def main():
     else:
         api = QrGenerator(None, VERBOSE=args.verbose)
 
-    # If a configuration file to load from has been found, load it to the app config
-    if args.config:
-        api.config.load(args.config)
-
-    # If a preset file to load from has been found, load it to the app options
-    if args.preset:
-        api.data.load(args.preset)
-
     # If a file has been found to load from, load it to data and config:
     if args.load:
         api.load(args.load)
