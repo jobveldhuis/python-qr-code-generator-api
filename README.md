@@ -1,8 +1,10 @@
 # python-qr-code-generator-api
 A simple Python wrapper for the API of qr-code-generator.com, which is used to generate QR codes with certain design elements.
 
+## Why this API wrapper?
+First of all, because I needed it and also because this API is not really [well documented](https://www.qr-code-generator.com/qr-code-api/). This wrapper provides a quick and easy way to connect to the API and request images, with a minimal amount of coding or effort. Just import the module, write a couple lines of easily understandable code and start generating these amazing QR codes.
+
 ## Table of Contents
-* [Why this API wrapper?](#why-this-api-wrapper-)
   * [Features](#features)
     + [Configure to fit your own needs](#configure-to-fit-your-own-needs)
     + [Change all possible QR code options](#change-all-possible-qr-code-options)
@@ -18,10 +20,7 @@ A simple Python wrapper for the API of qr-code-generator.com, which is used to g
   * [Presets](#presets)
     + [The easiest code](#the-easiest-code)
   * [Limitations](#limitations)
-
-## Why this API wrapper?
-First of all, because I needed it and also because this API is not really [well documented](https://www.qr-code-generator.com/qr-code-api/). This wrapper provides a quick and easy way to connect to the API and request images, with a minimal amount of coding or effort. Just import the module, write a couple lines of easily understandable code and start generating these amazing QR codes.
-
+  
 ## Features
 ### Configure to fit your own needs
 While we have the wrapper set up in a way that allows for quick usage of the API, we understand that sometimes you just need it to test an absurd scenario or that you want to change output folders. With the configuration file, you are the boss. Even better: you don't necessarily have to change the configuration file to work for you. If you want, you can just use code to update configuration variables and run a request. This way, your configuration is limited to your own code.
