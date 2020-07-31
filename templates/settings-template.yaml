@@ -1,0 +1,35 @@
+'options':
+  # These are all the settings for QrGenerator.options. To not change them on load, you might want to comment or delete them.
+  'access_token': null
+  'qr_code_text': null
+  'image_format': 'SVG'
+  'image_width': 500
+  'download': 0
+  'foreground_color': #000000
+  'background_color': #FFFFFF
+  'marker_left_inner_color': #000000
+  'marker_left_outer_color': '#000000'
+  'marker_right_inner_color': '#000000'
+  'marker_right_outer_color': '#000000'
+  'marker_bottom_inner_color': '#000000'
+  'marker_bottom_outer_color': '#000000'
+  'marker_left_template': 'version1'
+  'marker_right_template': 'version1'
+  'marker_bottom_template': 'version1'
+  'qr_code_logo': 'no-logo'
+  'frame_color': '#000000'
+  'frame_text': null
+  'frame_text_color': '#ffffff'
+  'frame_icon_name': 'app'
+  'frame_name': 'no-frame'
+
+'config':
+  # These are all the settings for QrGenerator.config
+  'VERBOSE': True
+  'API_URI': 'https://api.qr-code-generator.com/v1/create?'
+  'FORCE_OVERWRITE': False
+  'REQUIRED_PARAMETERS':
+    - 'access_token'
+    - 'qr_code_text'
+  'OUT_FOLDER': 'out'
+  'OUTPUT_FOLDER': 'output'
