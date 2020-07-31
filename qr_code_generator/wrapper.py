@@ -19,7 +19,7 @@ class QrGenerator:
         Set to '.env' to load access-token from environment (export ACCESS_TOKEN=your token here)
 
     **kwargs
-        A way to directly set the qr generation settings to the generator.
+        A way to directly set the options and configuration settigs when calling the generator.
         >>> t = QrGenerator(qr_code_text='TEST')
         >>> t.get('qr_code_text')
         'TEST'
