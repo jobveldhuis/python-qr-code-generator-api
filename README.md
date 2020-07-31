@@ -47,7 +47,11 @@ When ```QrGenerator.request()``` is called and the API token has not been set an
 
 ## Presets
 Not everyone loves coding. We are currently moving more and more to a world in which nocode is the standard for big groups of people, there is a way to load settings from a yaml file to the api, without you having to do any coding. Copy the settings-template.yaml template in /templates/ to your main directory and make the necessary changes. You can change both values for options and config. They will be automatically loaded and generation will take place.
-> You can load with the load flag (described above), but you can also call api.load(filename.yaml) to load it in your own code. This will even further reduce the amount of Python necessary to generate a QR code:
-> ```api = QrGenerator()```
-> ```api.load(file.yaml)```
-> ```api.generate()```
+> You can load with the load flag (described above), but you can also call api.load(filename.yaml) to load it in your own code. This will even further reduce the amount of Python necessary to generate a QR code.
+
+### The easiest code
+```python
+api = QrGenerator()
+api.load(file.yaml)
+api.generate()
+```
