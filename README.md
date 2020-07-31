@@ -1,6 +1,24 @@
 # python-qr-code-generator-api
 A simple Python wrapper for the API of qr-code-generator.com, which is used to generate QR codes with certain design elements.
 
+## Table of Contents
+* [Why this API wrapper?](#why-this-api-wrapper-)
+  * [Features](#features)
+    + [Configure to fit your own needs](#configure-to-fit-your-own-needs)
+    + [Change all possible QR code options](#change-all-possible-qr-code-options)
+    + [Automatically save QR codes](#automatically-save-qr-codes)
+  * [Usage](#usage)
+    + [Command Line Interface](#command-line-interface)
+      - [CLI Example](#cli-example)
+    + [Use it in your own code](#use-it-in-your-own-code)
+      - [Example of using it in your own code](#example-of-using-it-in-your-own-code)
+  * [Authentication](#authentication)
+    + [Environment variables](#environment-variables)
+    + [Hardcoded in your own code](#hardcoded-in-your-own-code)
+  * [Presets](#presets)
+    + [The easiest code](#the-easiest-code)
+  * [Limitations](#limitations)
+
 ## Why this API wrapper?
 First of all, because I needed it and also because this API is not really [well documented](https://www.qr-code-generator.com/qr-code-api/). This wrapper provides a quick and easy way to connect to the API and request images, with a minimal amount of coding or effort. Just import the module, write a couple lines of easily understandable code and start generating these amazing QR codes.
 
