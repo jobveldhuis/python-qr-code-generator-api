@@ -21,12 +21,12 @@ class Config(dict):
         self['VERBOSE'] = False
 
 
-class Settings(dict):
+class Options(dict):
     """
     Settings class, behaves just like a dict.
     """
     def __init__(self, *args, **kwargs):
-        super(Settings, self).__init__(*args, **kwargs)
+        super(Options, self).__init__(*args, **kwargs)
 
         # Default settings for QR code generation
         self['access_token'] = None

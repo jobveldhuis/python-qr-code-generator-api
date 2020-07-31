@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from qr_code_generator.errors import *
-from qr_code_generator.helpers import Config, Settings, load_yaml
+from qr_code_generator.helpers import Config, Options, load_yaml
 
 import requests
 import os
@@ -26,8 +26,8 @@ class QrGenerator:
 
     Attributes
     ----------
-    data : dict
-        Dictionary with the data object used in the POST request to the API
+    options : dict
+        Dictionary with the options object used in the POST request to the API
 
     config : dict
         Configuration settings for the project. Can be updated to change workings of the program.
@@ -36,7 +36,7 @@ class QrGenerator:
         Filename to output to. Should not include extension. Can either be changed directly or gets updated in the request function.
     """
     def __init__(self, token=None, **kwargs):
-        self.data = Settings()
+        self.options = Options()
         self.config = Config()
         self.output_filename = None
 
@@ -94,17 +94,17 @@ class QrGenerator:
             self.__log(f'Setting configuration variable "{key}" to "{value}"')
             self.config[key] = value
         else:
-            if key not in self.data:
+            if key not in self.options:
                 self.__log(f'Error when setting option "{key}", it does not exist.', 'error')
                 raise KeyError
             self.__log(f'Setting option "{key}" to "{value}"')
-            self.data[key] = value
+            self.options[key] = value
 
     def get(self, key):
         """
-        Getter for the data and configuration dictionary. If key exists, returns the value.
+        Getter for the options and configuration dictionary. If key exists, returns the value.
         >>> t = QrGenerator()
-        >>> t.get('qr_code_text') == t.data['qr_code_text']
+        >>> t.get('qr_code_text') == t.options['qr_code_text']
         True
 
         >>> t = QrGenerator()
@@ -124,7 +124,7 @@ class QrGenerator:
         try:
             if key == key.upper():
                 return self.config[key]
-            return self.data[key]
+            return self.options[key]
         except KeyError:
             return None
 
@@ -139,7 +139,7 @@ class QrGenerator:
         """
         self.__log('Starting to create the query URL.')
         query_url = self.config['API_URI']
-        for key, value in self.data.items():
+        for key, value in self.options.items():
             if value:
                 if query_url == self.config['API_URI']:
                     query_url = query_url + str(key) + "=" + str(value)
@@ -150,7 +150,7 @@ class QrGenerator:
 
     def request(self, file_name=None):
         """
-        Requests a QR code from the API with the settings specified in the data object.
+        Requests a QR code from the API with the settings specified in the options object.
 
         Parameters
         ----------
@@ -169,7 +169,7 @@ class QrGenerator:
         self.validate()
         url = self.create_query_url()
         self.__log('Initiating post request to query URL.')
-        req = requests.post(url, data=self.data)
+        req = requests.post(url, data=self.options)
         self.handle_response(req)
         self.cleanup()
 
@@ -232,7 +232,7 @@ class QrGenerator:
             self.__log(f'Cannot write to file. Selected output file exists and FORCE_OVERWRITE is disabled.', 'error')
             raise FileExistsError
         file = self.config['OUT_FOLDER'] + '/' + self.config['OUTPUT_FOLDER'] + '/' + self.output_filename + '.' \
-            + self.data['image_format'].lower()
+            + self.options['image_format'].lower()
         with open(file, 'w') as f:
             f.writelines(content)
         self.__log(f'Successfully wrote response content to "{file}".', 'success')
@@ -290,7 +290,7 @@ class QrGenerator:
             Whether or not the output file does exists in the set output folder mapping.
         """
         file = self.config['OUT_FOLDER'] + '/' + self.config['OUTPUT_FOLDER'] + '/' + self.output_filename + '.' + \
-            self.data['image_format'].lower()
+            self.options['image_format'].lower()
         self.__log(f'Checking if output file: "{file}" already exists.')
         if os.path.exists(file) and not os.stat(file).st_size == 0:
             self.__log(f'Output file: "{file}" does exist.')
@@ -328,7 +328,7 @@ class QrGenerator:
         -------
         None
         """
-        if self.config['VERBOSE']:
+        if self.config['VERBOSE'] is True:
             # Set color prefix for error message
             if sort.lower() == 'error':
                 prefix = '\033[91m\033[1m'
@@ -423,9 +423,9 @@ class QrGenerator:
                 i += 1
             self.__log(f'Continuing with file: "{self.output_filename}"', 'success')
 
-        # Iterate over data items to check for required parameters, as to not waste requests
+        # Iterate over options to check for required parameters, as to not waste requests
         self.__log('Starting to check if all required parameters are set')
-        for key, value in self.data.items():
+        for key, value in self.options.items():
             if key in self.config['REQUIRED_PARAMETERS'] and not value:
                 self.__log(f'Missing a required parameter: {key}', 'error')
                 raise MissingRequiredParameterError(key)
