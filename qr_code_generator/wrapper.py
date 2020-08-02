@@ -145,6 +145,7 @@ class QrGenerator:
                     query_url = query_url + str(key) + "=" + str(value)
                 else:
                     query_url = query_url + "&" + str(key) + "=" + str(value)
+        query_url = query_url.replace(' ', '%20')
         self.__log(f'Done creating query url. URL to query: "{query_url}"')
         return query_url
 
