@@ -41,10 +41,10 @@ class QrGenerator:
         self.output_filename = None
 
         if token:
-            self.set('access-token', token)
+            self.set('access_token', token)
         else:
             try:
-                self.set('access-token', os.environ['ACCESS_TOKEN'])
+                self.set('access_token', os.environ['ACCESS_TOKEN'])
             except KeyError:
                 pass
 
