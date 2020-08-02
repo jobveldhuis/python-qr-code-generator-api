@@ -5,7 +5,7 @@ with open("README.md", "r") as doc:
 
 setuptools.setup(
     name='qr_code_generator_api',
-    version='0.1.1',
+    version='0.1.2',
     author='Job Veldhuis',
     author_email='job@baukefrederik.me',
     description='Python wrapper for qr-code-generator.com API',
