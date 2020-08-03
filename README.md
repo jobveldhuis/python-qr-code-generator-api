@@ -1,4 +1,9 @@
 # python-qr-code-generator-api
+[![Maintained](https://img.shields.io/maintenance/yes/2020)](https://github.com/jobveldhuis/python-qr-code-generator-api/commits)
+[![PyPi Version](https://img.shields.io/pypi/v/qr-code-generator-api)](https://pypi.org/project/qr-code-generator-api/)
+[![License](https://img.shields.io/github/license/jobveldhuis/python-qr-code-generator-api)](LICENSE)
+[![Python Version](https://img.shields.io/pypi/pyversions/qr-code-generator-api)](https://pypi.org/project/qr-code-generator-api/)
+
 A simple Python wrapper for the API of qr-code-generator.com, which is used to generate QR codes with certain design elements.
 
 ## Why this API wrapper?
