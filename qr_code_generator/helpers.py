@@ -68,10 +68,7 @@ def is_yaml(file):
     bool
         Whether or not the specified file is a yaml-file.
     """
-    extension = file.split('.')[-1]
-    if not extension == 'yaml':
-        return False
-    return True
+    return file.endswith('.yaml') or file.endswith('.yml')
 
 
 def load_yaml(file):

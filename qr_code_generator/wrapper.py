@@ -9,6 +9,7 @@ import time
 
 
 class QrGenerator:
+    # TODO: Change logging to built-in Python logger
     """
     QRGenerator Class, which wraps the API of qr-code-generator.com
 
